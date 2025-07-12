@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Story Writer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f4f6f8;
+  color: #333;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 28px;
+  color: #222;
+}
+
+label {
+  font-weight: 600;
+  margin-top: 20px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  background-color: #f9f9f9;
+  resize: none;
+}
+
+textarea {
+  height: 100px;
+}
+
+button {
+  background-color: #6366f1;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background-color: #4f46e5;
+}
+
+.output-box {
+  margin-top: 30px;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e1;
+  padding: 20px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  font-family: 'Georgia', serif;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Loader (spinner) */
+.loader {
+  margin: 20px auto;
+  border: 6px solid #eee;
+  border-top: 6px solid #6366f1;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ✅ Responsive Tweaks */
+@media (max-width: 600px) {
+  .card {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  select,
+  textarea {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .output-box {
+    font-size: 0.95rem;
+    padding: 15px;
+    max-height: 300px;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <div class="card">
+      <h1>✍️ AI Blog/Story Writer</h1>
+
+      <label for="genre">Select Genre</label>
+      <select id="genre">
+        <option value="tech">Tech</option>
+        <option value="travel">Travel</option>
+        <option value="horror">Horror</option>
+        <option value="romance">Romance</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="education">Education</option>
+        <option value="startup">Startup</option>
+        <option value="motivation">Motivation</option>
+        <option value="drama">Drama</option>
+        <option value="folk">Folk Tales</option>
+        <option value="mythology">Mythology</option>
+        <option value="college">College Life</option>
+        <option value="career">Career Journey</option>
+        <option value="festival">Festival Moments</option>
+        <option value="romcom">Rom-Com</option>
+
+      </select>
+
+      <label for="keywords">Enter Keywords / Theme</label>
+      <textarea id="keywords" placeholder="e.g., AI, automation, future of work"></textarea>
+
+      <button onclick="generateContent()">✨ Generate</button>
+
+      <div id="loader" class="loader" style="display: none;"></div>
+      <div id="output" class="output-box"></div>
+    </div>
+  </div>
+
+  <script>
+    async function generateContent() {
+  const genre = document.getElementById("genre").value;
+  const keywords = document.getElementById("keywords").value.trim();
+  const output = document.getElementById("output");
+  const loader = document.getElementById("loader");
+
+  output.innerText = "";
+
+  if (!keywords) {
+    output.innerText = "⚠️ Please enter some keywords or theme.";
+    return;
+  }
+
+  loader.style.display = "block";
+
+  try {
+    const res = await fetch("http://localhost:5000/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ genre, keywords })
+    });
+
+    const data = await res.json();
+    loader.style.display = "none";
+
+    if (data.result) {
+      output.innerText = data.result;
+    } else {
+      output.innerText = "❌ Error generating content.";
+    }
+  } catch (err) {
+    console.error("Error:", err);
+    loader.style.display = "none";
+    output.innerText = "⚠️ Server error. Please try again.";
+  }
+}
+
+  </script>
+</body>
+</html>
