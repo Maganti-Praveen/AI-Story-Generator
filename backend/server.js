@@ -16,8 +16,8 @@ app.post("/generate", async (req, res) => {
 
 const prompt = `Write a ${genre} story or blog using these keywords: "${keywords}". 
 Make it culturally relevant and emotionally appealing to people from Andhra Pradesh. 
-Include Telugu names, local references (like Vizag, Vijayawada, Tirupati, Araku, Guntur, etc.), family values, or settings that resonate with Andhra readers. 
-Use clear language, a warm tone, and limit the output to around 300 words.`;
+Include Telugu names, local references.
+Use clear language, a warm tone.`;
 
   const requestBody = {
     contents: [
